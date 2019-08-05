@@ -10,14 +10,14 @@ function deepPopulate(paths) {
     paths = paths.split(" ");
   }
 
-  paths.forEach(function(path) {
+  for (const path of paths) {
 
     // check for arrays that we should not populate
     let schema = self.schema;
     const splits = [];
     let stack = [];
 
-    path.split('.').forEach(function(subPath) {
+    for (let subPath of path.split('.')) {
       let skip = false;
       schema = schema.path(subPath);
       if (schema instanceof SchemaTypesObjectId) {
@@ -40,15 +40,16 @@ function deepPopulate(paths) {
       }
       stack.push(subPath);
       if (skip) {
-        return ;
+        break;
       }
       splits.push(stack.join('.'));
       stack = [];
-    });
+    };
 
     // now build the populate arg
     let res;
-    splits.reverse().forEach(function(subPath) {
+    while (splits.length) {
+      const subPath = splits.pop();
       if (res) {
         res = {
           path: subPath,
@@ -59,10 +60,11 @@ function deepPopulate(paths) {
           path: subPath
         }
       }
-    })
+    }
 
     self.populate(res);
-  });
+  }
+
   return self;
 };
 
