@@ -3,8 +3,12 @@ const mongoose = require('mongoose');
 const SchemaTypesObjectId = mongoose.Schema.Types.ObjectId;
 const SchemaTypesArray = mongoose.Schema.Types.Array;
 
-function deepPopulate(paths) {
+function deepPopulate(paths, opts) {
   const self = this;
+  opts = {
+    select: [],
+    ...opts
+  };
 
   if (typeof paths === "string") {
     paths = paths.split(" ");
@@ -60,6 +64,18 @@ function deepPopulate(paths) {
           path: subPath
         }
       }
+    }
+
+    // add select opts
+    let tmp = res;
+    let currPath = [];
+    while (tmp) {
+      currPath.push(tmp.path);
+      const selectVal = opts.select[currPath.join(".")];
+      if (selectVal) {
+        tmp.select = selectVal;
+      }
+      tmp = tmp.populate;
     }
 
     self.populate(res);
