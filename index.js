@@ -44,7 +44,7 @@ function deepPopulate(paths, opts) {
       }
       stack.push(subPath);
       if (skip) {
-        break;
+        continue;
       }
       splits.push(stack.join('.'));
       stack = [];
