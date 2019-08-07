@@ -66,7 +66,7 @@ describe('mongoose-deep-populate', function() {
 
     it('two levels with select', async function() {
       const A = mongoose.model('A');
-      const res = await A.findOne().deepPopulate("b.c", {select: {'b.c': 'foo mystery.foo'}});
+      const res = await A.findOne().deepPopulate("b.c", {'b.c': {select: 'foo mystery.foo'}});
       assert.ok(!!(res.b.c.foo), "b.c.foo should be there");
       assert.ok(!!(res.b.c.mystery), "b.c.mystery should be there");
       assert.ok(!!(res.b.c.mystery.foo), "b.c.mystery.foo should be there");
@@ -77,7 +77,7 @@ describe('mongoose-deep-populate', function() {
 
     it('two levels with two select', async function() {
       const A = mongoose.model('A');
-      const res = await A.findOne().deepPopulate("b.c b.c2", {select: {'b.c': 'foo mystery.foo', 'b.c2': 'bar mystery.bar'}});
+      const res = await A.findOne().deepPopulate("b.c b.c2", {'b.c': {select: 'foo mystery.foo'}, 'b.c2': {select: 'bar mystery.bar'}});
 
       assert.ok(!!(res.b.c.foo), "b.c.foo should be there");
       assert.ok(!(res.b.c.bar), "b.c.bar should not be there");

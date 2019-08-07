@@ -5,10 +5,7 @@ const SchemaTypesArray = mongoose.Schema.Types.Array;
 
 function deepPopulate(paths, opts) {
   const self = this;
-  opts = {
-    select: [],
-    ...opts
-  };
+  opts = opts || {};
 
   if (typeof paths === "string") {
     paths = paths.split(" ");
@@ -66,14 +63,14 @@ function deepPopulate(paths, opts) {
       }
     }
 
-    // add select opts
+    // add opts
     let tmp = res;
     let currPath = [];
     while (tmp) {
       currPath.push(tmp.path);
-      const selectVal = opts.select[currPath.join(".")];
-      if (selectVal) {
-        tmp.select = selectVal;
+      const populateOpts = opts[currPath.join(".")];
+      if (populateOpts) {
+        Object.assign(tmp, populateOpts)
       }
       tmp = tmp.populate;
     }
